@@ -2,9 +2,8 @@ package br.com.brunolutterbach.aluraflix.dto;
 
 import br.com.brunolutterbach.aluraflix.model.Video;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class VideoDto {
@@ -21,7 +20,7 @@ public class VideoDto {
         this.url = video.getUrl();
     }
 
-    public static List<VideoDto> converter(List<Video> videos) {
-        return videos.stream().map(VideoDto::new).collect(Collectors.toList());
+    public static Page<VideoDto> converter(Page<Video> videos) {
+        return videos.map(VideoDto::new);
     }
 }

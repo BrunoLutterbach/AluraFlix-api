@@ -4,6 +4,8 @@ import br.com.brunolutterbach.aluraflix.dto.VideoDto;
 import br.com.brunolutterbach.aluraflix.dto.form.VideoForm;
 import br.com.brunolutterbach.aluraflix.service.VideoService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +20,8 @@ public class VideoController {
     final VideoService videoService;
 
     @GetMapping()
-    public ResponseEntity<List<VideoDto>> listarVideos() {
-        return videoService.listarVideos();
+    public ResponseEntity<Page<VideoDto>> listarVideos(Pageable pageable) {
+        return videoService.listarVideos(pageable);
     }
 
     @GetMapping("/{id}")

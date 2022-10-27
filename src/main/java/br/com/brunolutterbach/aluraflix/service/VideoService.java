@@ -6,12 +6,16 @@ import br.com.brunolutterbach.aluraflix.exception.ResourceNotFoundException;
 import br.com.brunolutterbach.aluraflix.model.Video;
 import br.com.brunolutterbach.aluraflix.repository.VideoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.data.domain.Sort.Direction.*;
 
 @Service
 @AllArgsConstructor
@@ -19,8 +23,8 @@ public class VideoService {
 
     final VideoRepository videoRepository;
 
-    public ResponseEntity<List<VideoDto>> listarVideos() {
-        List<Video> videos = videoRepository.findAll();
+    public ResponseEntity<Page<VideoDto>> listarVideos(@PageableDefault(sort = "id", direction = ASC) Pageable pageable) {
+        Page<Video> videos = videoRepository.findAll(pageable);
         return ResponseEntity.ok(VideoDto.converter(videos));
     }
 
