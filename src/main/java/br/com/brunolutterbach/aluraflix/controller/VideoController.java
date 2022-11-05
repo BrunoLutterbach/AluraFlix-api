@@ -20,13 +20,13 @@ public class VideoController {
     final VideoService videoService;
 
     @GetMapping()
-    public ResponseEntity<Page<VideoDto>> listarVideos(Pageable pageable) {
-        return videoService.listarVideos(pageable);
+    public ResponseEntity<Page<VideoDto>> listar(@RequestParam(required = false) String titulo, Pageable pageable) {
+        return videoService.listarTodos(pageable, titulo);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VideoDto> buscarVideoPorId(@PathVariable Long id){
-        return videoService.listarVideoPorId(id);
+    public ResponseEntity<?> buscarVideoPorId(@PathVariable Long id){
+        return videoService.buscarPorId(id);
     }
 
     @PostMapping()
@@ -35,7 +35,7 @@ public class VideoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VideoForm> atualizarVideo(@PathVariable Long id, @RequestBody VideoForm videoForm) {
+    public ResponseEntity<VideoForm> atualizarVideo(@PathVariable Long id, @RequestBody @Valid VideoForm videoForm) {
         return videoService.atualizarVideo(id, videoForm);
     }
 

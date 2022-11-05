@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -35,7 +36,7 @@ public class RestExceptionHandler {
                 .title("Erro de validação")
                 .date(ZonedDateTime.now())
                 .status(400)
-                .detail("Erro no campo " + errors)
+                .detail("Erro no campo " + errors + ". " + Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage())
                 .build();
     }
 }

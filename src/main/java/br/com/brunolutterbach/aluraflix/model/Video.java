@@ -19,5 +19,7 @@ public class Video {
     private String titulo;
     private String descricao;
     private String url;
+    @ManyToOne
+    private Categoria categoria;
 
 }
