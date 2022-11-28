@@ -2,22 +2,15 @@ package br.com.brunolutterbach.aluraflix.dto;
 
 import br.com.brunolutterbach.aluraflix.model.Categoria;
 import br.com.brunolutterbach.aluraflix.repository.VideoRepository;
-import lombok.Data;
 
 import java.util.List;
 
-@Data
-public class CategoriaVideoDto {
+public record CategoriaVideoDto(Long id, String titulo, String cor, List<VideoDto> videos) {
 
-    private Long id;
-    private String titulo;
-    private String cor;
-    private List<VideoDto> videos;
-
-    public CategoriaVideoDto(Categoria categoriaVideoDto, VideoRepository videoRepository) {
-        this.id = categoriaVideoDto.getId();
-        this.titulo = categoriaVideoDto.getTitulo();
-        this.cor = categoriaVideoDto.getCor();
-        this.videos = VideoDto.converter(videoRepository.findByCategoriaId(categoriaVideoDto.getId()));
+    public CategoriaVideoDto(Categoria categoria, VideoRepository videoRepository) {
+        this(categoria.getId(), categoria.getTitulo(), categoria.getCor(),
+                videoRepository.findByCategoriaId(categoria.getId()).stream().map(VideoDto::new).toList());
+                // Para cada video, cria um VideoDto e adiciona na lista
     }
 }
+

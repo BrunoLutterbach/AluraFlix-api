@@ -3,15 +3,19 @@ package br.com.brunolutterbach.aluraflix.service;
 import br.com.brunolutterbach.aluraflix.dto.CategoriaDto;
 import br.com.brunolutterbach.aluraflix.dto.CategoriaVideoDto;
 import br.com.brunolutterbach.aluraflix.dto.form.CategoriaForm;
+import br.com.brunolutterbach.aluraflix.dto.form.CategoriaUpdateForm;
 import br.com.brunolutterbach.aluraflix.exception.ResourceNotFoundException;
 import br.com.brunolutterbach.aluraflix.model.Categoria;
 import br.com.brunolutterbach.aluraflix.repository.CategoriaRepository;
 import br.com.brunolutterbach.aluraflix.repository.VideoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 
 @Service
 @AllArgsConstructor
@@ -20,46 +24,33 @@ public class CategoriaService {
     final CategoriaRepository categoriaRepository;
     final VideoRepository videoRepository;
 
-    public ResponseEntity<List<CategoriaDto>> listarTodos() {
-        var categorias = categoriaRepository.findAll();
-        return ResponseEntity.ok(CategoriaDto.converter(categorias));
+    public ResponseEntity<Page<CategoriaDto>> listarTodos(@PageableDefault(sort = "id", direction = ASC) Pageable pageable) {
+        return ResponseEntity.ok(categoriaRepository.findAll(pageable).map(CategoriaDto::new));
     }
 
     public ResponseEntity<CategoriaDto> buscarPorId(Long id) {
-        var categoria = categoriaRepository.findById(id);
-        return categoria.map(categoriaDto -> ResponseEntity.ok(new CategoriaDto(categoriaDto)))
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria de id " + id + " não foi encontrada"));
+        return ResponseEntity.ok(categoriaRepository.findById(id).map(CategoriaDto::new)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria de id " + id + " não encontrada")));
     }
 
     public ResponseEntity<CategoriaVideoDto> buscarPorIdComVideos(Long id) {
-        var categoria = categoriaRepository.findById(id);
-        return categoria.map(categoriaVideoDto -> ResponseEntity.ok(new CategoriaVideoDto(categoriaVideoDto, videoRepository)))
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria de id " + id + " não foi encontrada"));
+        return ResponseEntity.ok(categoriaRepository.findById(id).map(categoria -> new CategoriaVideoDto(categoria, videoRepository))
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria de id " + id + " não encontrada")));
     }
 
     public ResponseEntity<CategoriaForm> cadastrarCategoria(CategoriaForm categoriaForm) {
-        var categoria = categoriaForm.converter(new Categoria());
-        categoriaRepository.save(categoria);
+        categoriaRepository.save(new Categoria(categoriaForm));
         return ResponseEntity.ok(categoriaForm);
     }
 
-    public ResponseEntity<CategoriaForm> atualizarCategoria(Long id, CategoriaForm categoriaForm) {
-        var categoria = categoriaRepository.findById(id);
-        if (categoria.isPresent()) {
-            var categoriaAtualizado = categoriaForm.atualizar(id, categoriaRepository);
-            categoriaRepository.save(categoriaAtualizado);
-            return ResponseEntity.ok(categoriaForm);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<CategoriaDto> atualizarCategoria(Long id, CategoriaUpdateForm categoriaUpdateForm) {
+        var categoria = categoriaRepository.getReferenceById(id);
+        return ResponseEntity.ok(categoria.atualizar(categoriaUpdateForm));
     }
 
     public ResponseEntity<?> deletarCategoria(Long id) {
-        var categoria = categoriaRepository.findById(id);
-        if (categoria.isPresent()) {
-            categoriaRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        categoriaRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

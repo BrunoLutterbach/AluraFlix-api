@@ -3,13 +3,15 @@ package br.com.brunolutterbach.aluraflix.controller;
 import br.com.brunolutterbach.aluraflix.dto.CategoriaDto;
 import br.com.brunolutterbach.aluraflix.dto.CategoriaVideoDto;
 import br.com.brunolutterbach.aluraflix.dto.form.CategoriaForm;
+import br.com.brunolutterbach.aluraflix.dto.form.CategoriaUpdateForm;
 import br.com.brunolutterbach.aluraflix.service.CategoriaService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/categorias")
@@ -19,8 +21,8 @@ public class CategoriaController {
     final CategoriaService categoriaService;
 
     @GetMapping()
-    public ResponseEntity<List<CategoriaDto>> listarCategorias(){
-       return categoriaService.listarTodos();
+    public ResponseEntity<Page<CategoriaDto>> listarCategorias(Pageable pageable){
+       return categoriaService.listarTodos(pageable);
     }
 
     @GetMapping("/{id}")
@@ -34,13 +36,15 @@ public class CategoriaController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<CategoriaForm> cadastrarCategoria(@RequestBody @Valid CategoriaForm categoriaForm) {
         return categoriaService.cadastrarCategoria(categoriaForm);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriaForm> atualizarCategoria(@PathVariable Long id, @RequestBody @Valid CategoriaForm categoriaForm) {
-        return categoriaService.atualizarCategoria(id, categoriaForm);
+    @Transactional
+    public ResponseEntity<CategoriaDto> atualizarCategoria(@PathVariable Long id, @RequestBody @Valid CategoriaUpdateForm categoriaUpdateForm) {
+        return categoriaService.atualizarCategoria(id, categoriaUpdateForm);
     }
 
     @DeleteMapping("/{id}")

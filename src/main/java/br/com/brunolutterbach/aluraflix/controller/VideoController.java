@@ -2,15 +2,17 @@ package br.com.brunolutterbach.aluraflix.controller;
 
 import br.com.brunolutterbach.aluraflix.dto.VideoDto;
 import br.com.brunolutterbach.aluraflix.dto.form.VideoForm;
+import br.com.brunolutterbach.aluraflix.dto.form.VideoUpdateForm;
 import br.com.brunolutterbach.aluraflix.service.VideoService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/videos")
@@ -30,13 +32,15 @@ public class VideoController {
     }
 
     @PostMapping()
+    @Transactional
     public ResponseEntity<VideoForm> cadastrarVideo(@RequestBody @Valid VideoForm videoForm){
         return videoService.cadastrarVideo(videoForm);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VideoForm> atualizarVideo(@PathVariable Long id, @RequestBody @Valid VideoForm videoForm) {
-        return videoService.atualizarVideo(id, videoForm);
+    @Transactional
+    public ResponseEntity<VideoDto> atualizarVideo(@PathVariable Long id, @RequestBody @Valid VideoUpdateForm videoUpdateForm) {
+        return videoService.atualizarVideo(id, videoUpdateForm);
     }
 
     @DeleteMapping("/{id}")
