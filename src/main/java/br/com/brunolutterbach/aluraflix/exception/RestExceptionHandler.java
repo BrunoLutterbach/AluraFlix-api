@@ -55,16 +55,4 @@ public class RestExceptionHandler {
                 .build();
         return new ResponseEntity<>(resourceNotFoundDetails, HttpStatus.valueOf(resourceNotFoundDetails.getStatus()));
     }
-
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<?> handleEmptyResultDataAccessException() {
-        ResourceNotFoundDetails resourceNotFoundDetails = ResourceNotFoundDetails.builder()
-                .title("Erro")
-                .date(ZonedDateTime.now())
-                .status(404)
-                .detail("Id informado para deletar não existe")
-                .build();
-        return new ResponseEntity<>(resourceNotFoundDetails, HttpStatus.valueOf(resourceNotFoundDetails.getStatus()));
-    }
-
 }

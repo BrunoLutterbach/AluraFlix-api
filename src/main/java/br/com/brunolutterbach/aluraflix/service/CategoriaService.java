@@ -49,8 +49,11 @@ public class CategoriaService {
     }
 
     public ResponseEntity<?> deletarCategoria(Long id) {
-        categoriaRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        if (categoriaRepository.existsById(id)) {
+            categoriaRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        throw new ResourceNotFoundException("Categoria de id " + id + " não encontrada");
     }
 
 }
