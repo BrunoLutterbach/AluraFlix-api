@@ -5,9 +5,11 @@ import br.com.brunolutterbach.aluraflix.dto.form.VideoForm;
 import br.com.brunolutterbach.aluraflix.dto.form.VideoUpdateForm;
 import br.com.brunolutterbach.aluraflix.repository.CategoriaRepository;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
 
 
