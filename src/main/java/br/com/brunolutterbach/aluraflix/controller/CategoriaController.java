@@ -22,37 +22,39 @@ public class CategoriaController {
 
     @GetMapping()
     public ResponseEntity<Page<CategoriaDto>> listarCategorias(Pageable pageable){
-       return categoriaService.listarTodos(pageable);
+        Page<CategoriaDto> categoriaDtos = categoriaService.listarTodos(pageable);
+        return ResponseEntity.ok(categoriaDtos);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoriaDto> buscarCategoriaPorId(@PathVariable Long id){
-        return categoriaService.buscarPorId(id);
+        CategoriaDto categoriaDto = categoriaService.buscarPorId(id);
+        return ResponseEntity.ok(categoriaDto);
     }
 
     @GetMapping("/{id}/videos")
     public ResponseEntity<CategoriaVideoDto> buscarCategoriaPorIdComVideos(@PathVariable Long id){
-        return categoriaService.buscarPorIdComVideos(id);
+        CategoriaVideoDto categoriaVideoDto = categoriaService.buscarPorIdComVideos(id);
+        return ResponseEntity.ok(categoriaVideoDto);
     }
 
     @PostMapping
     @Transactional
     public ResponseEntity<CategoriaForm> cadastrarCategoria(@RequestBody @Valid CategoriaForm categoriaForm) {
-        return categoriaService.cadastrarCategoria(categoriaForm);
+        CategoriaForm categoriaCadastrada = categoriaService.cadastrarCategoria(categoriaForm);
+        return ResponseEntity.ok(categoriaCadastrada);
     }
 
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<CategoriaDto> atualizarCategoria(@PathVariable Long id, @RequestBody @Valid CategoriaUpdateForm categoriaUpdateForm) {
-        return categoriaService.atualizarCategoria(id, categoriaUpdateForm);
+        CategoriaDto categoriaAtualizada = categoriaService.atualizarCategoria(id, categoriaUpdateForm);
+        return ResponseEntity.ok(categoriaAtualizada);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarCategoria(@PathVariable Long id) {
-        return categoriaService.deletarCategoria(id);
+        categoriaService.deletarCategoria(id);
+        return ResponseEntity.noContent().build();
     }
-
-
-
-
 }

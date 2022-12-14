@@ -25,34 +25,33 @@ public class VideoService {
     final VideoRepository videoRepository;
     final CategoriaRepository categoriaRepository;
 
-    public ResponseEntity<Page<VideoDto>> listarTodos(@PageableDefault(sort = "id", direction = ASC)
+    public Page<VideoDto> listarTodos(@PageableDefault(sort = "id", direction = ASC)
                                                       Pageable pageable, String titulo) {
         if (titulo == null) {
-            return ResponseEntity.ok(videoRepository.findAllByAtivoTrue(pageable).map(VideoDto::new));
+            return videoRepository.findAllByAtivoTrue(pageable).map(VideoDto::new);
         }
-        return ResponseEntity.ok(videoRepository.listarPorTitulo(titulo, pageable).map(VideoDto::new));
+        return videoRepository.listarPorTitulo(titulo, pageable).map(VideoDto::new);
     }
 
-    public ResponseEntity<VideoDto> buscarPorId(Long id) {
-        return videoRepository.findById(id).map(video -> ResponseEntity.ok(new VideoDto(video)))
-                .orElseThrow(() -> new ResourceNotFoundException("Video de id " + id + " não encontrado"));
+    public VideoDto buscarPorId(Long id) {
+        Video video = videoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Video de id " + id + " não encontrado"));
+        return new VideoDto(video);
     }
 
-    public ResponseEntity<VideoForm> cadastrarVideo(VideoForm videoForm) {
+    public VideoForm cadastrarVideo(VideoForm videoForm) {
         videoRepository.save(new Video(videoForm, categoriaRepository));
-        return ResponseEntity.ok(videoForm);
+        return videoForm;
     }
 
-    public ResponseEntity<VideoDto> atualizarVideo(Long id, VideoUpdateForm videoUpdateForm) {
+    public VideoDto atualizarVideo(Long id, VideoUpdateForm videoUpdateForm) {
         var video = videoRepository.getReferenceById(id);
         var categoria = categoriaRepository.getReferenceById(Objects.requireNonNullElse(videoUpdateForm.categoriaId(), video.getCategoria().getId()));
-        return ResponseEntity.ok(video.atualizar(videoUpdateForm, categoria));
+        return video.atualizar(videoUpdateForm, categoria);
     }
 
-    public ResponseEntity<?> deletarVideo(Long id) {
+    public void inativarVideo(Long id) {
         var video = videoRepository.getReferenceById(id);
         video.inativar();
-        return ResponseEntity.noContent().build();
     }
 }
 

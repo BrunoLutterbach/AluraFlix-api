@@ -67,5 +67,4 @@ public class Video {
     public void inativar() {
         this.ativo = false;
     }
-
 }

@@ -23,29 +23,33 @@ public class VideoController {
 
     @GetMapping()
     public ResponseEntity<Page<VideoDto>> listar(@RequestParam(required = false) String titulo, Pageable pageable) {
-        return videoService.listarTodos(pageable, titulo);
+        Page<VideoDto> videoDtos = videoService.listarTodos(pageable, titulo);
+        return ResponseEntity.ok(videoDtos);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarVideoPorId(@PathVariable Long id){
-        return videoService.buscarPorId(id);
+        VideoDto videoDto = videoService.buscarPorId(id);
+        return ResponseEntity.ok(videoDto);
     }
 
     @PostMapping()
     @Transactional
     public ResponseEntity<VideoForm> cadastrarVideo(@RequestBody @Valid VideoForm videoForm){
-        return videoService.cadastrarVideo(videoForm);
+        VideoForm videoCadastrado = videoService.cadastrarVideo(videoForm);
+        return ResponseEntity.ok(videoCadastrado);
     }
 
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<VideoDto> atualizarVideo(@PathVariable Long id, @RequestBody @Valid VideoUpdateForm videoUpdateForm) {
-        return videoService.atualizarVideo(id, videoUpdateForm);
+        VideoDto videoAtualizado = videoService.atualizarVideo(id, videoUpdateForm);
+        return ResponseEntity.ok().body(videoAtualizado);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletarVideo(@PathVariable Long id) {
-        return videoService.deletarVideo(id);
+    public ResponseEntity<?> inativarVideo(@PathVariable Long id) {
+        videoService.inativarVideo(id);
+        return ResponseEntity.noContent().build();
     }
-
 }

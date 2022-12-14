@@ -31,6 +31,12 @@ public class Categoria {
         this.cor = categoriaForm.cor();
     }
 
+    public Categoria(long id, String categoria, String cor) {
+        this.id = id;
+        this.titulo = categoria;
+        this.cor = cor;
+    }
+
     public CategoriaDto atualizar(CategoriaUpdateForm categoriaUpdateForm) {
         if (categoriaUpdateForm.titulo() != null) {
             this.titulo = categoriaUpdateForm.titulo();
